@@ -1,0 +1,410 @@
+/* ============================================================
+   Design tokens
+   ============================================================ */
+:root {
+  --pantry: #2c3b33;
+  --pantry-deep: #223028;
+  --card: #f6f2e8;
+  --card-edge: #e3dccb;
+  --rule: #c0503a;
+  --saffron: #e5a32b;
+  --ink: #1c2620;
+  --muted: #6e7f73;
+  --muted-light: #9fafa3;
+
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "Karla", system-ui, sans-serif;
+  --font-mono: "Space Mono", ui-monospace, monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--pantry);
+  color: var(--card);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============================================================
+   Layout
+   ============================================================ */
+.app { padding: 40px 20px 64px; }
+.app__shell { max-width: 1080px; margin: 0 auto; }
+
+.footnote {
+  text-align: center;
+  margin-top: 26px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+
+/* ============================================================
+   Masthead
+   ============================================================ */
+.masthead { text-align: center; margin-bottom: 30px; }
+
+.masthead__eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--saffron);
+  margin: 0 0 10px;
+}
+
+.masthead__wordmark {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(38px, 7vw, 64px);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.masthead__home { color: var(--card); text-decoration: none; }
+.masthead__home em { font-style: italic; color: var(--saffron); }
+
+.masthead__sub {
+  margin: 12px auto 0;
+  max-width: 460px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--muted-light);
+}
+
+/* ============================================================
+   Search
+   ============================================================ */
+.searchbar { max-width: 520px; margin: 26px auto 30px; position: relative; }
+
+.searchbar__input {
+  width: 100%;
+  padding: 15px 46px 15px 18px;
+  background: var(--card);
+  border: none;
+  border-radius: 3px;
+  border-bottom: 3px solid var(--rule);
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: var(--ink);
+}
+.searchbar__input::placeholder { color: var(--muted); }
+.searchbar__input:focus { outline: 3px solid var(--saffron); outline-offset: 2px; }
+
+.searchbar__icon {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  pointer-events: none;
+  font-size: 15px;
+}
+
+/* ============================================================
+   Divider tabs — the signature element
+   ============================================================ */
+.tabs { display: flex; flex-wrap: wrap; gap: 4px; padding: 0 6px; }
+
+.tabs__tab {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 10px 15px 12px;
+  background: var(--pantry-deep);
+  color: var(--muted-light);
+  border: none;
+  border-radius: 7px 7px 0 0;
+  cursor: pointer;
+  position: relative;
+  top: 2px;
+  text-decoration: none;
+  transition: background 140ms ease, color 140ms ease;
+}
+.tabs__tab:hover { color: var(--card); background: #2a3a31; }
+.tabs__tab:focus-visible { outline: 3px solid var(--saffron); outline-offset: -3px; }
+
+.tabs__tab--active {
+  background: var(--card);
+  color: var(--ink);
+  font-weight: 700;
+  top: 0;
+  padding-bottom: 14px;
+}
+.tabs__tab--active:hover { background: var(--card); color: var(--ink); }
+
+.tabs__count { margin-left: 6px; color: var(--saffron); font-weight: 700; }
+.tabs__tab--active .tabs__count { color: var(--rule); }
+
+/* ============================================================
+   Card sheet
+   ============================================================ */
+.sheet {
+  background: var(--card);
+  border-radius: 0 7px 7px 7px;
+  padding: 26px;
+  min-height: 320px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
+}
+
+.sheet__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--card-edge);
+  padding-bottom: 14px;
+  margin-bottom: 22px;
+}
+
+.sheet__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 22px;
+  color: var(--ink);
+  margin: 0;
+}
+
+.sheet__meta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ============================================================
+   Grid and cards
+   ============================================================ */
+.grid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+}
+
+.card {
+  background: #fffdf7;
+  border: 1px solid var(--card-edge);
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+.card:hover { transform: translateY(-3px); box-shadow: 0 10px 22px rgba(28, 38, 32, 0.16); }
+.card:focus-visible { outline: 3px solid var(--saffron); outline-offset: 2px; }
+
+.card__thumb {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+  background: var(--card-edge);
+}
+
+.card__body {
+  padding: 13px 14px 15px;
+  border-top: 2px solid var(--rule);
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0 25px,
+    rgba(28, 38, 32, 0.055) 25px 26px
+  );
+  flex: 1;
+}
+
+.card__title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.25;
+  color: var(--ink);
+  margin: 0 0 8px;
+}
+
+.card__tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0;
+}
+
+/* ============================================================
+   Loading and empty states
+   ============================================================ */
+.skeleton { border: 1px solid var(--card-edge); border-radius: 4px; overflow: hidden; }
+.skeleton__image { aspect-ratio: 4 / 3; background: var(--card-edge); }
+.skeleton__bar { height: 11px; background: var(--card-edge); border-radius: 2px; margin: 13px 14px; }
+.skeleton__bar--short { width: 55%; }
+.skeleton__image, .skeleton__bar { animation: pulse 1.4s ease-in-out infinite; }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.state { padding: 56px 20px; text-align: center; }
+.state__title { font-family: var(--font-display); font-size: 20px; color: var(--ink); margin: 0 0 8px; }
+.state__body { color: var(--muted); font-size: 15px; margin: 0 0 20px; }
+
+.loading {
+  padding: 70px 20px;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ============================================================
+   Recipe detail
+   ============================================================ */
+.backlink {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: 20px;
+}
+.backlink:hover { color: var(--rule); }
+
+.recipe { max-width: 680px; margin: 0 auto; }
+
+.recipe__image {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  border-radius: 4px;
+  border-bottom: 4px solid var(--rule);
+  display: block;
+  margin-bottom: 22px;
+}
+
+.recipe__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 1.1;
+  color: var(--ink);
+  margin: 0 0 8px;
+}
+
+.recipe__tags {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 26px;
+}
+.recipe__tags span { color: var(--rule); }
+
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-bottom: 1px solid var(--card-edge);
+  padding-bottom: 7px;
+  margin: 0 0 14px;
+}
+
+.ingredients { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+.ingredients td {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  padding: 7px 0;
+  border-bottom: 1px dotted var(--card-edge);
+  color: var(--ink);
+}
+.ingredients__measure { width: 120px; color: var(--rule); white-space: nowrap; padding-right: 14px; }
+
+.steps { counter-reset: step; list-style: none; padding: 0; margin: 0 0 26px; }
+.steps__item {
+  counter-increment: step;
+  position: relative;
+  padding-left: 38px;
+  margin-bottom: 15px;
+  font-size: 15px;
+  line-height: 1.62;
+  color: var(--ink);
+}
+.steps__item::before {
+  content: counter(step, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: 1px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--saffron);
+}
+
+.recipe__footer {
+  border-top: 1px solid var(--card-edge);
+  padding-top: 18px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.button {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 700;
+  padding: 11px 16px;
+  background: var(--ink);
+  color: var(--card);
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}
+.button:hover { background: var(--rule); }
+.button:focus-visible { outline: 3px solid var(--saffron); outline-offset: 2px; }
+
+.sourcelink {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--rule);
+  text-decoration: none;
+}
+.sourcelink:hover { text-decoration: underline; }
+
+/* ============================================================
+   Responsive and motion preferences
+   ============================================================ */
+@media (max-width: 560px) {
+  .sheet { padding: 18px; }
+  .recipe__image { height: 190px; }
+  .recipe__title { font-size: 24px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
