@@ -2,7 +2,7 @@
 
 A recipe discovery app built with React. Search 300+ recipes by name, browse by category, and read full ingredient lists and methods.
 
-**[Live demo →](https://recipe-box-yourname.vercel.app)**
+**[Live demo →](https://recipe-box-lake-nine.vercel.app)**
 
 ![The Recipe Box](./screenshot.png)
 
