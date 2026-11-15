@@ -18,11 +18,12 @@ export function useMealDetail(id) {
     mealApi
       .lookupById(id, { signal: controller.signal })
       .then((data) => {
+        if (controller.signal.aborted) return;
         setMeal(data);
         setLoading(false);
       })
       .catch((err) => {
-        if (err.name === "AbortError") return;
+        if (controller.signal.aborted) return;
         setError(err.message);
         setLoading(false);
       });

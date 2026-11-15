@@ -1,16 +1,10 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
-import App from "./App";
-import { SavedRecipesProvider } from "./context/SavedRecipesContext";
-import "./styles/index.css";
-
-ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <SavedRecipesProvider>
-        <App />
-      </SavedRecipesProvider>
-    </BrowserRouter>
-  </React.StrictMode>
-);
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
+import App from './App';
+import ErrorBoundary from './components/ErrorBoundary';
+import { SavedRecipesProvider } from './context/SavedRecipesContext';
+import { LibraryProvider } from './context/LibraryContext';
+import './styles/index.css';
+import './styles/kitchen.css';
+ReactDOM.createRoot(document.getElementById('root')).render(<React.StrictMode><ErrorBoundary><BrowserRouter><SavedRecipesProvider><LibraryProvider><App /></LibraryProvider></SavedRecipesProvider></BrowserRouter></ErrorBoundary></React.StrictMode>);

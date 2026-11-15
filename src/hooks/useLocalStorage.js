@@ -8,7 +8,8 @@ export function useLocalStorage(key, initialValue) {
   const [value, setValue] = useState(() => {
     try {
       const stored = window.localStorage.getItem(key);
-      return stored ? JSON.parse(stored) : initialValue;
+      const parsed = stored ? JSON.parse(stored) : initialValue;
+      return Array.isArray(initialValue) && !Array.isArray(parsed) ? initialValue : parsed;
     } catch {
       // Corrupt JSON or storage disabled (private mode) — fall back to default.
       return initialValue;

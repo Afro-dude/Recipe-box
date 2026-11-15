@@ -10,7 +10,8 @@ import { STORAGE_KEY } from "../constants";
 const SavedRecipesContext = createContext(null);
 
 export function SavedRecipesProvider({ children }) {
-  const [saved, setSaved] = useLocalStorage(STORAGE_KEY, []);
+  const [rawSaved, setSaved] = useLocalStorage(STORAGE_KEY, []);
+  const saved = useMemo(() => rawSaved.filter(r => r && typeof r.idMeal === "string" && typeof r.strMeal === "string"), [rawSaved]);
 
   const isSaved = useCallback(
     (id) => saved.some((meal) => meal.idMeal === id),

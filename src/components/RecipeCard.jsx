@@ -6,14 +6,13 @@ export default function RecipeCard({ meal, fallbackTag }) {
       <img
         className="card__thumb"
         src={`${meal.strMealThumb}/preview`}
-        alt={meal.strMeal}
+        alt=""
         loading="lazy"
       />
       <div className="card__body">
         <h3 className="card__title">{meal.strMeal}</h3>
         <p className="card__tag">
-          {meal.strArea ? `${meal.strArea} · ` : ""}
-          {meal.strCategory || fallbackTag}
+          {[...new Set([meal.strArea, meal.strCategory || fallbackTag].filter(Boolean))].join(' · ')}
         </p>
       </div>
     </Link>

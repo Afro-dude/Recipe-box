@@ -1,95 +1,136 @@
 # The Recipe Box
 
-A recipe discovery app built with React. Search 300+ recipes by name, browse by category, and read full ingredient lists and methods.
+Discover recipes from around the world, turn your ingredients into a meal, and plan your week—all in one React app.
 
-**[Live demo →](https://recipe-box-lake-nine.vercel.app)**
+**[Open the live app →](https://recipe-box-lake-nine.vercel.app)**
 
-![The Recipe Box](./screenshot.png)
+![The Recipe Box homepage with cuisine and ingredient discovery, category filters, and recipe cards](./screenshot.png)
 
 ## Features
 
-- **Search by name** with debounced input — one request after typing stops, not one per keystroke
-- **Browse by category** across seven cuisines, rendered as index-card divider tabs
-- **Full recipe view** with ingredient table and numbered method, at its own shareable URL
-- **Save recipes** to a personal list that persists across sessions via `localStorage`
-- **Shareable result URLs** — search and filter state lives in the query string
-- **Loading, empty, and error states** handled explicitly on every screen
-- **Responsive** down to mobile, with visible keyboard focus and reduced-motion support
+| Explore | Cook | Keep & plan |
+| --- | --- | --- |
+| Search recipes by name | Generate a recipe from your ingredients | Save complete recipes in your browser |
+| Browse all available categories | Adjust servings and ingredient quantities | Write and edit your own recipes |
+| Discover cuisines and regions | Request substitutions and review changes | Add favorites, collections, ratings and notes |
+| Filter by one main ingredient | Check off steps and start cooking timers | Plan meals and combine shopping ingredients |
+| Find a random recipe | Restore cooking progress after a refresh | Export and import JSON backups |
 
-## Tech stack
+AI-generated recipes are clearly labeled as suggestions. You review a proposed revision before applying it; a failed request leaves the existing recipe intact.
 
-| Layer | Choice |
-| --- | --- |
-| Framework | React 18 (functional components, Hooks) |
-| Routing | React Router v6 |
-| Build tool | Vite |
-| State | `useState`, Context API, custom hooks |
-| Data | TheMealDB REST API |
-| Styling | CSS custom properties, no framework |
-| Deployment | Vercel |
+## Built with
 
-## Run it locally
+- **Frontend:** React 18, React Router 7, Vite 8 and plain CSS.
+- **AI:** Groq's OpenAI-compatible API with `openai/gpt-oss-20b`.
+- **Recipe catalogue:** TheMealDB.
+- **Backend:** Node.js locally and Vercel Functions in production.
+- **Storage:** Browser `localStorage`; no database or user accounts.
+- **Tests:** Node.js's built-in test runner.
 
-```bash
-npm install
-npm run dev
+## Run locally
+
+Requires **Node.js 22.12+**; Node 24 is recommended.
+
+### Windows / PowerShell
+
+```powershell
+npm.cmd install
+Copy-Item .env.example .env
 ```
 
-Open the URL Vite prints (usually `http://localhost:5173`). Requires Node 18+.
+Open `.env` and configure:
+
+```env
+GROQ_API_KEY=your_groq_api_key
+GROQ_BASE_URL=https://api.groq.com/openai/v1
+GROQ_MODEL=openai/gpt-oss-20b
+PORT=5173
+```
+
+Create a key in [Groq Console](https://console.groq.com/keys). Keep it in `.env`, which is excluded from Git. Never put a secret in frontend code or a `VITE_` variable.
+
+Start the app:
+
+```powershell
+npm.cmd start
+```
+
+Open **http://127.0.0.1:5173**. Restart the server after changing `.env`.
+
+On macOS/Linux, use `npm` instead of `npm.cmd`, and `cp .env.example .env` to copy the configuration.
+
+Without an API key, recipe browsing, manual recipes, the library, timers and meal planning still work. AI generation and substitutions require a configured Groq key.
+
+## How it works
+
+1. Enter ingredients, servings, cuisine preferences and available time.
+2. The browser sends the request to `/api/generate`.
+3. The server asks Groq for a recipe using a strict JSON schema.
+4. Both server and browser validate the response before displaying it.
+5. The recipe becomes an interactive card with serving controls, cooking steps, timers and notes.
+
+For a substitution, the model receives the current recipe and your requested change. It returns a complete revision, including affected ingredients and instructions. Your notes, meal plan and other saved recipes are not sent.
+
+## Handling unreliable AI output
+
+- Reject malformed JSON, incorrect types, empty ingredient lists and invalid quantities or timers.
+- Handle provider failures, refusals, quota limits and incomplete responses with clear errors and a retry action.
+- Bound requests with a 45-second server timeout and a 55-second client timeout.
+- Cancel in-flight requests and use a separate sequence guard to prevent stale responses from replacing newer results.
+- Preserve the current recipe on failure; no automatic retries that consume extra API usage.
+- Reset checklists and timers when applying a revision so progress cannot attach to different steps.
 
 ## Project structure
 
+```text
+api/                         Vercel function entry points
+server/                      Local server and Groq integration
+shared/recipe.js             Recipe schema, validation and quantity calculations
+src/components/              Reusable UI components
+src/context/                 Browser library and persistence
+src/hooks/                   Requests, cancellation and state
+src/pages/                   Explore, Cook, Recipe Box, Editor and Planner
+src/services/                Browser API clients
+src/utils/                   Backup validation and calendar helpers
+src/styles/                  Original visual identity and expanded layouts
+tests/                       Validation, API and data-handling tests
 ```
-src/
-├── services/     the only module that calls fetch
-├── utils/        pure data-shaping functions, no React
-├── hooks/        useDebounce, useLocalStorage, useMeals, useMealDetail
-├── context/      saved recipes, shared across routes
-├── components/   presentational — receive props, fetch nothing
-├── pages/        one per route, owns that screen's data
-└── styles/       design tokens and component styles
+
+## Checks
+
+```powershell
+npm.cmd test
+npm.cmd run build
 ```
 
-The separation is deliberate: `RecipeCard` doesn't know TheMealDB exists, and `mealApi.js` doesn't know React exists. Swapping the data source would touch one file.
+The 15 automated tests cover structured output, provider errors, client validation, stale-request protection, serving calculations, shopping lists, backups and week calculations.
 
-## Routes
+Browser checks covered manual recipe creation, serving changes, restored progress and notes, timer completion, meal planning, recipe discovery and a mobile layout. Production verification confirmed that the homepage, cooking page and API status endpoint respond successfully, and that Groq returns a complete recipe.
 
-| Path | Screen |
-| --- | --- |
-| `/` | Search and category browse |
-| `/recipe/:id` | Full recipe — ingredients and method |
-| `/saved` | Recipes saved to `localStorage` |
-| `*` | Not found |
+## Deployment
 
-## API endpoints
+The app is deployed on **[Vercel](https://recipe-box-lake-nine.vercel.app)**.
 
-| Purpose | Endpoint |
-| --- | --- |
-| Search by name | `/search.php?s={query}` |
-| Filter by category | `/filter.php?c={category}` |
-| Full recipe by id | `/lookup.php?i={id}` |
+Configure `GROQ_API_KEY` as a server-side secret, plus `GROQ_BASE_URL` and `GROQ_MODEL`, in the Vercel project's Production environment. Build with `npm run build` and use `dist` as the output directory. The `api/` functions handle generation and configuration status; API routes are excluded from the SPA rewrite.
 
-## Notes on a few decisions
+`npm start` runs the local frontend and backend together. `npm run preview` serves only the built frontend and does not include AI endpoints.
 
-**Debounced search.** Typing fires one request after 350ms of quiet. Without it, "chicken" would fire seven requests.
+## Limitations & data
 
-**Aborted requests.** Each fetch carries an `AbortController` signal. Without it, a slow earlier request can resolve after a faster later one and overwrite the correct results — a race condition that only shows up on poor connections.
+- **Local storage:** Your library belongs to this browser and origin. Clearing browser data removes it; use JSON backups to move or preserve it. Localhost and the live site have separate libraries.
+- **Source measurements:** TheMealDB recipes may omit base servings and use textual measures. Imported quantities represent one original batch. Set numeric amounts and the correct base servings in Edit before scaling.
+- **Shopping quantities:** Only matching ingredient names and units are combined. The app does not convert cups to grams or merge synonyms.
+- **Timers:** Timers restore after refresh and show elapsed alerts on return, but do not send OS notifications while the app is closed.
+- **AI suggestions:** Generated recipes are not tested recipes or certified dietary advice. Review ingredients and cooking instructions before use.
+- **Service limits:** Groq and TheMealDB quotas apply. The catalogue may cap results. There is no app-level authentication or durable rate limiting.
+- **Scope:** No cloud sync, database, nutrition estimates or streaming. Concurrent edits in multiple tabs are not synchronized.
 
-**Flat ingredient fields.** The API returns `strIngredient1..20` and `strMeasure1..20` as separate fields rather than an array, so `parseIngredients` loops through them and drops the empty slots.
+## Credits & AI assistance
 
-**Search state in the URL.** Storing the query and category as search params makes results bookmarkable and fixes the back button. The debounced write uses `replace: true` so typing doesn't push a history entry per character.
+Built by [Mayank](https://github.com/Afro-dude), expanding the original Recipe Box recipe browser and its pantry-green, paper-card visual style.
 
-**Three explicit UI states.** Every data-loading screen handles loading, error, and empty — not just the success path.
+Codex assisted with architecture, implementation, documentation and tests.
 
-## What I'd add next
-
-- Cache responses so revisiting a category doesn't refetch
-- Pagination or infinite scroll for large result sets
-- Unit tests for the parsing utilities, which are pure and easy to cover
-- Filter by ingredient and cuisine, both already supported by the API
-
-## Credits
-
-Recipe data from [TheMealDB](https://www.themealdb.com), a free public API.
-
-Built by [Mayank](https://github.com/Afro-dude).
+- [TheMealDB API](https://www.themealdb.com/api.php)
+- [Groq structured outputs](https://console.groq.com/docs/structured-outputs)
+- [Groq OpenAI compatibility](https://console.groq.com/docs/openai)
